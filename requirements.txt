@@ -1,0 +1,7 @@
+numpy
+numba
+cytoolz
+matplotlib
+pandas
+tqdm
+h5py

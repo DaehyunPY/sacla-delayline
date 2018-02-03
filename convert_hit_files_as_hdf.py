@@ -1,9 +1,9 @@
 from glob import iglob
 from os.path import splitext, basename, getmtime, getctime
 from itertools import chain
-from h5py import File
 from time import sleep
 
+from h5py import File
 from numpy import stack
 from pandas import DataFrame
 
