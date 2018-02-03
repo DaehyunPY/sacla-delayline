@@ -39,7 +39,7 @@ def tags_at(run: int, *other_runs: int, beamline: int = None) -> Tuple[int, Sequ
     hightags: ndarray = pipe(runs, partial(map, hightag_at_the_beamline), partial(fromiter, dtype='int'))
     if not (hightags == hightags[0]).all():
         raise ValueError('Not all the runs have a single hightag!')
-    tags = pipe(runs, partial(map, taglist_at_the_beamline), concat, sorted, tuple)
+    tags = pipe(runs, partial(map, taglist_at_the_beamline), concat, tuple)
     return hightags[0], tags
 
 

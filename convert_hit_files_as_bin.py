@@ -1,6 +1,7 @@
 from glob import iglob
 from os.path import splitext, basename, getmtime, getctime
 from struct import Struct
+from time import sleep
 
 from tqdm import tqdm
 
@@ -20,7 +21,7 @@ equips = {
 }
 
 
-def convert(ifile, ofile):
+def convert(ifile, ofile='exported.bin'):
     tags = tuple(d['tag'] for d in hit_reader(ifile))  # get tag list
     print("Getting metadata...")
     df = scalars_at(*tags, hightag=hightag, equips=equips)  # get SACLA meta data
@@ -50,13 +51,15 @@ def convert(ifile, ofile):
     print("Done!")
 
 
-hits = {splitext(basename(fn))[0]: getmtime(fn) for fn in iglob(hit_filename("*"))}
-bins = {splitext(basename(fn))[0]: getctime(fn) for fn in iglob(bin_filename("*"))}
-jobs = {fn for fn, t in hits.items() if fn not in bins or bins[fn] < t}
-if len(jobs) == 0:
-    print("Nothing to do!")
-else:
-    for fn in jobs:
-        print('Converting file {}...'.format(fn))
-        convert(hit_filename(fn), bin_filename(fn))
-        print('Done!')
+while True:
+    hits = {splitext(basename(fn))[0]: getmtime(fn) for fn in iglob(hit_filename("*"))}
+    bins = {splitext(basename(fn))[0]: getctime(fn) for fn in iglob(bin_filename("*"))}
+    jobs = tuple(fn for fn, t in hits.items() if fn not in bins or bins[fn] < t)
+    if len(jobs) == 0:
+        print("Nothing to do!")
+    else:
+        for fn in jobs:
+            print('Converting file {}...'.format(fn))
+            convert(hit_filename(fn), bin_filename(fn))
+            print('Done!')
+    sleep(10)
