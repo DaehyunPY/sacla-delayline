@@ -1,14 +1,12 @@
 from glob import iglob
-from os.path import splitext, basename, getmtime, getctime
 from itertools import chain
+from os.path import splitext, basename, getmtime, getctime
 from time import sleep
 
 from h5py import File
-from numpy import stack
 from pandas import DataFrame
 
 from sacla_tools import hit_reader, scalars_at
-
 
 # parameters!
 hit_filename = "/work/uedalab/2017A8005/hit_files/_preanalysis/{0}/{0}.hit".format
@@ -26,18 +24,18 @@ equips = {
 def convert(ifile, ofile='exported.h5'):
     df = DataFrame(((d['tag'], d['nhits']) for d in hit_reader(ifile)), columns=('tag', 'nhits'))
     cumsummed = df['nhits'].cumsum()
-    addr = stack((cumsummed-df['nhits'], cumsummed.rename('to')), axis=-1)
     meta = scalars_at(*df.index.values.tolist(), hightag=hightag, equips=equips)  # get SACLA meta data
     hits = DataFrame(list(chain(*(d['hits'] for d in hit_reader(ifile)))))
 
     with File(ofile) as f:
-        for k, v in df.iteritems():
-            f[k] = v
-        f['addr'] = addr
+        f['Tagevent'] = df['tag']
+        f['nions'] = df['nhits']
+        f['nlistpos'] = cumsummed - df['nhits']
+        f['tof'] = hits['t']
+        f['xpos'] = hits['x']
+        f['ypos'] = hits['y']
         for k, v in meta.iteritems():
-            f['meta/{}'.format(k)] = v
-        for k, v in hits.iteritems():
-            f['hits/{}'.format(k)] = v
+            f[k] = v
 
 
 while True:
@@ -47,7 +45,7 @@ while True:
     if len(jobs) == 0:
         print("Nothing to do!")
     else:
-        for fn in hits:
+        for fn in jobs:
             print('Converting file {}...'.format(fn))
             convert(hit_filename(fn), hdf_filename(fn))
             print('Done!')
