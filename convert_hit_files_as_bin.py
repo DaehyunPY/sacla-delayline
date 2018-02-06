@@ -5,7 +5,7 @@ from time import sleep
 
 from tqdm import tqdm
 
-from sacla_tools import hit_reader, scalars_at
+from saclatools import hit_reader, scalars_at
 
 
 # parameters!

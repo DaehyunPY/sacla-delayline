@@ -6,7 +6,7 @@ from time import sleep
 from h5py import File
 from pandas import DataFrame
 
-from sacla_tools import hit_reader, scalars_at
+from saclatools import hit_reader, scalars_at
 
 # parameters!
 hit_filename = "/work/uedalab/2017A8005/hit_files/_preanalysis/{0}/{0}.hit".format
