@@ -5,7 +5,7 @@ from numpy import get_include
 
 setup(
     name='saclatools',
-    version='20170220',
+    version='20170220.1108',
     author='Daehyun You',
     author_email='daehyun@dc.tohoku.ac.jp',
     packages=['saclatools'],

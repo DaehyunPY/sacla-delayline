@@ -1,5 +1,6 @@
 # distutils: language=c++
 
+from cython cimport dict
 from libc.stdio cimport FILE, EOF, SEEK_SET, SEEK_CUR, SEEK_END, fopen, fclose, fread, fgetc, fseek, ftell
 from libcpp.pair cimport pair
 from libcpp.vector cimport vector
@@ -242,7 +243,7 @@ cdef class LmaReader:
     def channel_info(self) -> dict:
         return self.__channel_info
 
-    def __enter__(self) -> LmaReader:
+    def __enter__(self):
         self.__file = fopen(self.__filename.c_str(), "rb")
         if not self.__file:
             raise FileNotFoundError("No such a file: {}!".format(self.__filename))
@@ -273,7 +274,7 @@ cdef class LmaReader:
             yield self.__next()
         return
 
-    def __next(self) -> "Tuple[int, ndarray]":
+    cdef dict __next(self):
         cdef:
             npy_int16 dump_int16
             npy_int32 ret, tag, m, i, j, k[2]
@@ -313,4 +314,4 @@ cdef class LmaReader:
                 if not ret == k[1]:
                     raise IOError("Fail to read a block: {}!".format(ret))
                 arr[i, k[0]:k[0] + k[1]] = ch.gain * (dump.astype('float64') - ch.baseline)
-        return tag, arr
+        return {"tag": tag, **{"channel{}".format(self.__channels[i]): arr[i] for i in range(self.__nchannels)}}
