@@ -12,4 +12,7 @@ setup(
     ext_modules=cythonize("saclatools/lma_fmt.pyx"),
     include_dirs=[get_include()],
     install_requires=['cython', 'numpy', 'cytoolz', 'pandas'],
+    extras_require={
+        'hpc': ['dbpy', 'stpy'],
+    },
 )
