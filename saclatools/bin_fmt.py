@@ -1,6 +1,8 @@
 from struct import Struct
 from typing import Generator
 
+__all__ = ['hit_reader', 'bin_reader']
+
 
 def hit_reader(filename) -> Generator[dict, None, None]:
     """

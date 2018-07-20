@@ -4,6 +4,8 @@ from cytoolz import memoize, partial, concat, pipe, map
 from numpy import fromiter, ndarray
 from pandas import DataFrame
 
+__all__ = ['tags_at', 'scalars_at', 'ArrReader']
+
 
 def hightag(*args, **kwargs):
     global hightag

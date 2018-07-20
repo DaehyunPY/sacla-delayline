@@ -8,6 +8,8 @@ from libcpp.string cimport string
 from numpy cimport ndarray, npy_int16, npy_int64, npy_int32, npy_uint32, npy_float64
 from numpy import zeros, empty
 
+__all__ = ['LmaReader']
+
 
 cdef struct channel:
     npy_int32 fullscale, offset, baseline
